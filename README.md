@@ -8,7 +8,7 @@ A circular Image View with a lot of perks. Including progress animation and high
 
 
 ## Demo
-[Watch the video](https://youtu.be/UBpo8mkSwr0) or clone the repo and build the demo app
+[Watch the video](https://vimeo.com/291110435) or clone the repo and build the demo app
 
 ## Importing to Gradle
 Add this to your module's `build.gradle` file
