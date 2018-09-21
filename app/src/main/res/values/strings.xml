@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Avvy</string>
+    <string name="toggle_progress">Toggle Progress</string>
+    <string name="toggle_highlight">Toggle Highlight</string>
+    <string name="highlighted">Highlighted</string>
+    <string name="normal_thickness">Normal Thickness</string>
+    <string name="highlighted_thickness">Highlighted Thickness</string>
+    <string name="distance_to_border">Distance to Border</string>
+    <string name="arches_count">Arches Count</string>
+    <string name="arches_area">Arches Area</string>
+    <string name="highlight">Highlight</string>
+    <string name="arc_lenght">Arc Lenght</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
+    <string name="choose_color">Choose color</string>
+</resources>

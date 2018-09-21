@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="AvatarView">
+        <attr name="avvy_distance_to_border" format="dimension" />
+        <attr name="avvy_border_thickness" format="dimension" />
+        <attr name="avvy_border_thickness_highlight" format="dimension" />
+
+        <attr name="avvy_loading_arches" format="integer" />
+        <attr name="avvy_loading_arches_degree_area" format="float" />
+        <attr name="avvy_loading_arc_degree_lenght" format="float" />
+
+        <attr name="avvy_border_color" format="color" />
+        <attr name="avvy_border_color_end" format="color" />
+        <attr name="avvy_border_highlight_color" format="color" />
+        <attr name="avvy_border_highlight_color_end" format="color" />
+        <attr name="avvy_middle_color" format="color" />
+
+        <attr name="avvy_circle_background_color" format="color" />
+
+        <attr name="avvy_highlighted" format="boolean" />
+    </declare-styleable>
+</resources>
