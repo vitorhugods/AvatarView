@@ -24,10 +24,12 @@ android {
 
 repositories {
     maven { url "https://jitpack.io" }
+    maven { url "https://dl.bintray.com/vitorhugods/AvatarView" }
 }
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation project(':avvylib')
+//    implementation project(':avvylib')
+    implementation "xyz.schwaab:avvylib:0.0.1"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     implementation 'com.android.support:appcompat-v7:27.1.1'
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'

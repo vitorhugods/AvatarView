@@ -1,6 +1,30 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
+ext {
+    bintrayRepo = 'AvatarView'
+    bintrayName = 'avvylib'
+
+    publishedGroupId = 'xyz.schwaab'
+    libraryName = 'avvylib'
+    artifact = 'avvylib'
+    group = publishedGroupId
+
+    libraryDescription = 'A circular ImageView with border, progress animation and customizable highlights for Android'
+
+    siteUrl = 'https://github.com/vitorhugods/AvatarView'
+    gitUrl = 'https://github.com/vitorhugods/AvatarView.git'
+
+    libraryVersion = '0.0.1'
+
+    developerId = 'vitorhugods'
+    developerName = 'Vitor Hugo D. Schwaab'
+    developerEmail = 'vitorschwaab@gmail.com'
+
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
+}
 android {
     compileSdkVersion 27
 
@@ -34,3 +58,6 @@ dependencies {
 repositories {
     mavenCentral()
 }
+
+apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
+apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/bintrayv1.gradle'
