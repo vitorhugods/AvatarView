@@ -4,7 +4,11 @@ A circular Image View with a lot of perks. Including progress animation and high
 [![Gradle](https://img.shields.io/badge/Version-0.0.1-green.svg)](https://github.com/vitorhugods/AvatarView/releasesgraphs/commit-activity)
 ![Kotlin](https://img.shields.io/badge/Kotlin-100%25-orange.svg)
 
-<img src="https://raw.githubusercontent.com/vitorhugods/AvatarView/master/pics/ex1.png" alt="Ktor" width="300" style="max-width:100%;">
+### Samples
+|   |   |
+|:-:|:-:|
+| <img  src="/pics/ex1.png" alt="Example 1" width="300" style="max-width:100%;"> | <img  src="/pics/ex2.png" alt="Example 1" width="300" style="max-width:100%;"> |
+| <img src="/pics/sample1.gif" alt="Example 1" width="300" style="max-width:100%;"> | <img src="/pics/sample2.gif" alt="Example 1" width="300" style="max-width:100%;">  |
 
 
 ## Demo
