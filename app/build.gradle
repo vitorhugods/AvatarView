@@ -1,7 +1,6 @@
 apply plugin: 'com.android.application'
-
+apply plugin: 'jacoco-android'
 apply plugin: 'kotlin-android'
-
 apply plugin: 'kotlin-android-extensions'
 
 android {
@@ -32,6 +31,7 @@ dependencies {
     implementation "xyz.schwaab:avvylib:0.0.1"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'com.android.support:exifinterface:27.1.1'
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
     implementation 'com.github.QuadFlask:colorpicker:0.0.13'
     implementation 'com.xw.repo:bubbleseekbar:3.19'
