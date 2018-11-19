@@ -74,7 +74,7 @@ The roundness of the drawables based on [Henning Dodenhof's Circle ImageView](ht
 
  Libraries used in the demo app: 
  - [QuadFlask Color Picker](https://github.com/QuadFlask/colorpicker) 
- - [Bubbleseekbar](https://github.com/woxingxiao/BubbleS...)
+ - [Bubbleseekbar](https://github.com/woxingxiao/BubbleSeekBar)
  
  
 
