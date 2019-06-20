@@ -55,7 +55,7 @@ class AvatarView : ImageView {
     private var animationArchesSparseness = 0f
 
     /**
-     * The lenght (in degrees) available for the arches when animating.
+     * The length (in degrees) available for the arches when animating.
      */
     var totalArchesDegreeArea = Defaults.ARCHES_DEGREES_AREA
         set(value) {
@@ -75,7 +75,7 @@ class AvatarView : ImageView {
             setup()
         }
     /**
-     * The lenght (in degrees) of each arch when animating.
+     * The length (in degrees) of each arch when animating.
      * Keep in mind that the arches may overlap if this value is too high
      * and [totalArchesDegreeArea] is too low.
      */
