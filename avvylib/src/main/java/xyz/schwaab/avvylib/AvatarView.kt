@@ -2,6 +2,7 @@ package xyz.schwaab.avvylib
 
 import android.animation.AnimatorSet
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.*
 import android.graphics.drawable.BitmapDrawable
@@ -148,7 +149,7 @@ class AvatarView : ImageView {
      */
     var distanceToBorder = Defaults.DISTANCE_TO_BORDER
         set(value) {
-            field = if (value <= 0) 1 else value
+            field = if (value <= 0) 0 else value
             setup()
         }
     /**
@@ -156,7 +157,7 @@ class AvatarView : ImageView {
      */
     var borderThickness = Defaults.BORDER_THICKNESS
         set(value) {
-            field = if (value <= 0) 1 else value
+            field = if (value <= 0) 0 else value
             setup()
         }
     /**
@@ -164,7 +165,7 @@ class AvatarView : ImageView {
      */
     var highlightedBorderThickness = Defaults.HIGHLIGHTED_BORDER_THICKNESS
         set(value) {
-            field = if (value <= 0) 1 else value
+            field = if (value <= 0) 0 else value
             setup()
         }
 
@@ -367,7 +368,7 @@ class AvatarView : ImageView {
         middleRect.set(borderRect)
         middleRect.inset(currentBorderThickness + middleThickness / 2, currentBorderThickness + middleThickness / 2)
 
-        middleRadius = Math.min(middleRect.height() / 2f, middleRect.width() / 2f)
+        middleRadius = Math.min(Math.floor(middleRect.height() / 2.0), Math.floor(middleRect.width() / 2.0)).toFloat()
         drawableRadius = Math.min(avatarDrawableRect.height() / 2.0f, avatarDrawableRect.width() / 2.0f)
 
         middlePaint.apply {
@@ -456,6 +457,7 @@ class AvatarView : ImageView {
         return RectF(left, top, left + sideLength, top + sideLength)
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
         return inTouchableArea(event.x, event.y) && super.onTouchEvent(event)
     }
