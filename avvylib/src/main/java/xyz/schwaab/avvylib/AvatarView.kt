@@ -3,29 +3,30 @@ package xyz.schwaab.avvylib
 import android.animation.AnimatorSet
 import android.animation.ValueAnimator
 import android.content.Context
-import android.widget.ImageView
-import android.os.Build
 import android.graphics.*
-import android.util.AttributeSet
-import android.view.ViewOutlineProvider
-import android.support.annotation.RequiresApi
-import android.view.View
-import android.graphics.Shader
-import android.graphics.BitmapShader
-import android.graphics.RectF
-import android.view.MotionEvent
-import android.graphics.Bitmap
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
-import android.support.annotation.DrawableRes
+import android.os.Build
+import android.util.AttributeSet
+import android.util.Log
+import android.view.MotionEvent
+import android.view.View
+import android.view.ViewOutlineProvider
+import android.widget.ImageView
+import androidx.annotation.DrawableRes
+import androidx.annotation.RequiresApi
 
 
 /**
  * Created by vitor on 18/09/18.
  */
 class AvatarView : ImageView {
+    companion object {
+        const val TAG = "AvatarView"
+    }
+
     private val avatarDrawableRect = RectF()
     private val middleRect = RectF()
     private val borderRect = RectF()
@@ -58,6 +59,7 @@ class AvatarView : ImageView {
     var totalArchesDegreeArea = Defaults.ARCHES_DEGREES_AREA
         set(value) {
             field = value
+            logWarningOnArcLengthIfNeeded()
             setup()
         }
 
@@ -68,6 +70,7 @@ class AvatarView : ImageView {
     var numberOfArches = Defaults.NUMBER_OF_ARCHES
         set(value) {
             field = if (value <= 0) 1 else value
+            logWarningOnArcLengthIfNeeded()
             setup()
         }
     /**
@@ -78,8 +81,14 @@ class AvatarView : ImageView {
     var individualArcDegreeLenght = Defaults.INDIVIDUAL_ARCH_DEGREES_LENGHT
         set(value) {
             field = value
+            logWarningOnArcLengthIfNeeded()
             setup()
         }
+
+    private fun logWarningOnArcLengthIfNeeded() {
+        if (individualArcDegreeLenght * numberOfArches > totalArchesDegreeArea)
+            Log.w(TAG, "The arches are too big for them to be visible. (i.e. invididualArcLenght * numberOfArches > totalArchesDegreeArea)")
+    }
 
     /**
      * The color of the gap between the border and the avatar.
