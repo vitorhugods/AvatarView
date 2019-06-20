@@ -330,7 +330,7 @@ class AvatarView : ImageView {
         }
 
         if (avatarDrawable == null) {
-            invalidate()
+            setImageResource(android.R.color.transparent)
             return
         }
 
