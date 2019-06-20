@@ -2,8 +2,9 @@
 A circular Image View with a lot of perks. Including progress animation and highlight state with borders and gradient color.
 
 [![Build Status](https://travis-ci.com/vitorhugods/AvatarView.svg?branch=master)](https://travis-ci.com/vitorhugods/AvatarView)
-[![Gradle](https://img.shields.io/badge/Version-0.0.1-brightgreen.svg)](https://github.com/vitorhugods/AvatarView/releases)
+[![Gradle](https://img.shields.io/badge/Version-0.1.0-brightgreen.svg)](https://github.com/vitorhugods/AvatarView/releases)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/e4847d7f36754c1a8efb1aff838fdb91)](https://app.codacy.com/app/vitorhugods/AvatarView?utm_source=github.com&utm_medium=referral&utm_content=vitorhugods/AvatarView&utm_campaign=Badge_Grade_Dashboard)
+![Kotlin](https://img.shields.io/badge/minSdkVersion-14-brightgreen.svg)
 ![Kotlin](https://img.shields.io/badge/Kotlin-100%25-orange.svg)
 [![GitHub license](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat)](http://www.apache.org/licenses/LICENSE-2.0)
 ### Samples
@@ -24,7 +25,7 @@ repositories {
 }
 
 dependencies {
-    implementation "xyz.schwaab:avvylib:0.0.1"
+    implementation "xyz.schwaab:avvylib:0.1.0"
 }
 ```
 
@@ -50,7 +51,7 @@ You can personalize it in Kotlin:
 ```kotlin
         avatarView.apply {
             isAnimating = false
-            borderThickness = 18 //Currently px
+            borderThickness = 18
             highlightBorderColor = Color.GREEN
             highlightBorderColorEnd = Color.CYAN
             numberOfArches = 0
@@ -61,7 +62,7 @@ You can personalize it in Kotlin:
 Or, in Java:
 ```java
         avatarView.setAnimating(false);
-        avatarView.setBorderThickness(18); //Currently px
+        avatarView.setBorderThickness(18);
         avatarView.setHighlightBorderColor(Color.GREEN);
         avatarView.setHighlightBorderColorEnd(Color.CYAN);
         avatarView.setNumberOfArches(0);
