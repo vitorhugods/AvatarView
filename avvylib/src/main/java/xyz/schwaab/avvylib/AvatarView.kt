@@ -509,16 +509,16 @@ class AvatarView : ImageView {
         if (avatarBackgroundColor != Color.TRANSPARENT) {
             canvas.drawCircle(avatarDrawableRect.centerX(), avatarDrawableRect.centerY(), drawableRadius, circleBackgroundPaint)
         }
-        if(null != initials){
-           canvas.drawText(
-                   initials,
-                   width.div(2f) - initialsRect.width().div(2f),
-                   height.div(2f) + initialsRect.height().div(2f),
-                   initialsPaint
-           )
-        }
-        else if(null != avatarDrawable) {
+
+        if(null != avatarDrawable) {
             canvas.drawCircle(avatarDrawableRect.centerX(), avatarDrawableRect.centerY(), drawableRadius, bitmapPaint)
+        } else if(null != initials){
+            canvas.drawText(
+                    initials,
+                    width.div(2f) - initialsRect.width().div(2f),
+                    height.div(2f) + initialsRect.height().div(2f),
+                    initialsPaint
+            )
         }
         if (middleThickness > 0) {
             canvas.drawCircle(middleRect.centerX(), middleRect.centerY(), middleRadius, middlePaint)
