@@ -6,10 +6,10 @@ android:
     - tools
 
     # The BuildTools version used by your project
-    - build-tools-28.0.3
+    - build-tools-29.0.0
 
     # The SDK version used to compile your project
-    - android-28
+    - android-29
     
 script:
 - ./gradlew build jacocoTestReport
