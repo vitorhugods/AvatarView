@@ -18,5 +18,9 @@
         <attr name="avvy_circle_background_color" format="color" />
 
         <attr name="avvy_highlighted" format="boolean" />
+
+        <attr name="avvy_text" format="string"/>
+        <attr name="avvy_text_size" format="dimension"/>
+        <attr name="avvy_text_color" format="color"/>
     </declare-styleable>
 </resources>

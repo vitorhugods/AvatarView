@@ -5,6 +5,7 @@ import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.*
+import android.graphics.Paint.ANTI_ALIAS_FLAG
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
@@ -32,12 +33,17 @@ class AvatarView : ImageView {
     private val middleRect = RectF()
     private val borderRect = RectF()
     private val arcBorderRect = RectF()
+    private val initialsRect = Rect()
 
     private val shaderMatrix = Matrix()
     private val bitmapPaint = Paint()
     private val middlePaint = Paint()
     private val borderPaint = Paint()
     private val circleBackgroundPaint = Paint()
+    private val initialsPaint = Paint(ANTI_ALIAS_FLAG).apply {
+        color = Color.WHITE
+        textSize = 20f
+    }
 
     private var middleThickness = 0f
     private val avatarInset
@@ -186,6 +192,17 @@ class AvatarView : ImageView {
      */
     var shouldBounceOnClick = true
 
+    /**
+     * Text for which the initial(s) has to be displayed
+     */
+    var text: String? = null
+        set(value) {
+            field = value
+            findInitials()
+        }
+
+    private var initials: String? = null
+
     private val spaceBetweenArches
         get() = totalArchesDegreeArea / (numberOfArches) - individualArcDegreeLenght
 
@@ -309,6 +326,10 @@ class AvatarView : ImageView {
         totalArchesDegreeArea = a.getFloat(R.styleable.AvatarView_avvy_loading_arches_degree_area, Defaults.ARCHES_DEGREES_AREA)
         numberOfArches = a.getInt(R.styleable.AvatarView_avvy_loading_arches, Defaults.NUMBER_OF_ARCHES)
         individualArcDegreeLenght = a.getFloat(R.styleable.AvatarView_avvy_loading_arc_degree_lenght, Defaults.INDIVIDUAL_ARCH_DEGREES_LENGHT)
+
+        initialsPaint.textSize = a.getDimension(R.styleable.AvatarView_avvy_text_size, initialsPaint.textSize)
+        initialsPaint.color = a.getColor(R.styleable.AvatarView_avvy_text_color, initialsPaint.color)
+        text = a.getString(R.styleable.AvatarView_avvy_text)
 
         a.recycle()
         isReadingAttributes = false
@@ -481,13 +502,24 @@ class AvatarView : ImageView {
     }
 
     override fun onDraw(canvas: Canvas) {
-        if (avatarDrawable == null) {
+        if (avatarDrawable == null &&
+                initials == null) {
             return
         }
         if (avatarBackgroundColor != Color.TRANSPARENT) {
             canvas.drawCircle(avatarDrawableRect.centerX(), avatarDrawableRect.centerY(), drawableRadius, circleBackgroundPaint)
         }
-        canvas.drawCircle(avatarDrawableRect.centerX(), avatarDrawableRect.centerY(), drawableRadius, bitmapPaint)
+
+        if(null != avatarDrawable) {
+            canvas.drawCircle(avatarDrawableRect.centerX(), avatarDrawableRect.centerY(), drawableRadius, bitmapPaint)
+        } else if(null != initials){
+            canvas.drawText(
+                    initials,
+                    width.div(2f) - initialsRect.width().div(2f),
+                    height.div(2f) + initialsRect.height().div(2f),
+                    initialsPaint
+            )
+        }
         if (middleThickness > 0) {
             canvas.drawCircle(middleRect.centerX(), middleRect.centerY(), middleRadius, middlePaint)
         }
@@ -525,6 +557,22 @@ class AvatarView : ImageView {
     override fun setPaddingRelative(start: Int, top: Int, end: Int, bottom: Int) {
         super.setPaddingRelative(start, top, end, bottom)
         setup()
+    }
+
+    private fun findInitials() {
+        text?.trim()?.let {
+            if (it.isNotBlank()) {
+                val words = it.split(' ')
+                var initialsCount = 1
+                initials = words[0].first().toString()
+                if (words.size > 1) {
+                    initialsCount++
+                    initials = "$initials${words.last().first()}"
+                }
+
+                initialsPaint.getTextBounds(initials, 0, initialsCount, initialsRect)
+            }
+        }
     }
 
     /**
