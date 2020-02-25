@@ -2,7 +2,7 @@
 A circular Image View with a lot of perks. Including progress animation and highlight state with borders and gradient color.
 
 [![Build Status](https://travis-ci.com/vitorhugods/AvatarView.svg?branch=master)](https://travis-ci.com/vitorhugods/AvatarView)
-[![Gradle](https://img.shields.io/badge/Version-0.1.0-brightgreen.svg)](https://github.com/vitorhugods/AvatarView/releases)
+[![Gradle](https://img.shields.io/badge/Version-1.0.0-brightgreen.svg)](https://github.com/vitorhugods/AvatarView/releases)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/e4847d7f36754c1a8efb1aff838fdb91)](https://app.codacy.com/app/vitorhugods/AvatarView?utm_source=github.com&utm_medium=referral&utm_content=vitorhugods/AvatarView&utm_campaign=Badge_Grade_Dashboard)
 ![Kotlin](https://img.shields.io/badge/minSdkVersion-14-brightgreen.svg)
 ![Kotlin](https://img.shields.io/badge/Kotlin-100%25-orange.svg)
@@ -13,6 +13,12 @@ A circular Image View with a lot of perks. Including progress animation and high
 | <img  src="/pics/ex1.png" alt="Example 1" width="300" style="max-width:100%;"> | <img  src="/pics/ex2.png" alt="Example 1" width="300" style="max-width:100%;"> |
 | <img src="/pics/sample1.gif" alt="Example 1" width="300" style="max-width:100%;"> | <img src="/pics/sample2.gif" alt="Example 1" width="300" style="max-width:100%;">  |
 
+
+Supports initials if no image is provided:
+
+<img  src="/pics/initials.png" alt="Initials" width="200" style="max-width:100%;">
+
+Thanks to [@anoop44](https://github.com/anoop44)
 
 ## Demo
 [Watch the video](https://vimeo.com/291110435) or clone the repo and build the demo app
@@ -25,7 +31,7 @@ repositories {
 }
 
 dependencies {
-    implementation "xyz.schwaab:avvylib:0.1.0"
+    implementation "xyz.schwaab:avvylib:1.0.0"
 }
 ```
 
@@ -47,6 +53,13 @@ Just add this to your XML:
         app:avvy_loading_arches_degree_area="90"/>
 ```
 
+Add the name initials as fallback:
+```xml
+        app:avvy_text="Avatar View" //will show up as AV
+        app:avvy_text_size="42sp"
+        app:avvy_text_color="#ccc"
+```
+
 You can personalize it in Kotlin:
 ```kotlin
         avatarView.apply {
@@ -56,6 +69,7 @@ You can personalize it in Kotlin:
             highlightBorderColorEnd = Color.CYAN
             numberOfArches = 0
             totalArchesDegreeArea = 80
+            text = "Avatar View"
         }
 ```
 
@@ -82,7 +96,7 @@ The roundness of the drawables based on [Henning Dodenhof's Circle ImageView](ht
 License
 -------
 
-    Copyright 2018 Vitor Hugo D. Schwaab
+    Copyright 2020 Vitor Hugo D. Schwaab
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
