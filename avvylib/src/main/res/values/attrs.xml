@@ -7,7 +7,7 @@
 
         <attr name="avvy_loading_arches" format="integer" />
         <attr name="avvy_loading_arches_degree_area" format="float" />
-        <attr name="avvy_loading_arc_degree_lenght" format="float" />
+        <attr name="avvy_loading_arc_degree_length" format="float" />
 
         <attr name="avvy_border_color" format="color" />
         <attr name="avvy_border_color_end" format="color" />

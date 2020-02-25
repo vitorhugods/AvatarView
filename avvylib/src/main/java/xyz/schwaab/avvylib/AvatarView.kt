@@ -19,6 +19,7 @@ import android.widget.ImageView
 import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
 import kotlin.math.floor
+import kotlin.math.max
 import kotlin.math.min
 
 
@@ -44,11 +45,12 @@ class AvatarView : ImageView {
     private val initialsPaint = Paint(ANTI_ALIAS_FLAG).apply {
         color = Color.WHITE
         textSize = 20f
+        setup()
     }
 
     private var middleThickness = 0f
     private val avatarInset
-        get() = distanceToBorder + Math.max(borderThickness.toFloat(), highlightedBorderThickness.toFloat())
+        get() = distanceToBorder + max(borderThickness.toFloat(), highlightedBorderThickness.toFloat())
 
     private var avatarDrawable: Bitmap? = null
     private var bitmapShader: BitmapShader? = null
@@ -86,7 +88,7 @@ class AvatarView : ImageView {
      * Keep in mind that the arches may overlap if this value is too high
      * and [totalArchesDegreeArea] is too low.
      */
-    var individualArcDegreeLenght = Defaults.INDIVIDUAL_ARCH_DEGREES_LENGHT
+    var individualArcDegreeLength = Defaults.INDIVIDUAL_ARCH_DEGREES_LENGTH
         set(value) {
             field = value
             logWarningOnArcLengthIfNeeded()
@@ -94,8 +96,8 @@ class AvatarView : ImageView {
         }
 
     private fun logWarningOnArcLengthIfNeeded() {
-        if (individualArcDegreeLenght * numberOfArches > totalArchesDegreeArea)
-            Log.w(TAG, "The arches are too big for them to be visible. (i.e. invididualArcLenght * numberOfArches > totalArchesDegreeArea)")
+        if (individualArcDegreeLength * numberOfArches > totalArchesDegreeArea)
+            Log.w(TAG, "The arches are too big for them to be visible. (i.e. individualArcLength * numberOfArches > totalArchesDegreeArea)")
     }
 
     /**
@@ -200,12 +202,13 @@ class AvatarView : ImageView {
         set(value) {
             field = value
             findInitials()
+            setup()
         }
 
     private var initials: String? = null
 
     private val spaceBetweenArches
-        get() = totalArchesDegreeArea / (numberOfArches) - individualArcDegreeLenght
+        get() = totalArchesDegreeArea / (numberOfArches) - individualArcDegreeLength
 
     private val currentAnimationArchesArea
         get() = animationArchesSparseness * totalArchesDegreeArea
@@ -321,7 +324,7 @@ class AvatarView : ImageView {
 
         totalArchesDegreeArea = a.getFloat(R.styleable.AvatarView_avvy_loading_arches_degree_area, Defaults.ARCHES_DEGREES_AREA)
         numberOfArches = a.getInt(R.styleable.AvatarView_avvy_loading_arches, Defaults.NUMBER_OF_ARCHES)
-        individualArcDegreeLenght = a.getFloat(R.styleable.AvatarView_avvy_loading_arc_degree_lenght, Defaults.INDIVIDUAL_ARCH_DEGREES_LENGHT)
+        individualArcDegreeLength = a.getFloat(R.styleable.AvatarView_avvy_loading_arc_degree_length, Defaults.INDIVIDUAL_ARCH_DEGREES_LENGTH)
 
         initialsPaint.textSize = a.getDimension(R.styleable.AvatarView_avvy_text_size, initialsPaint.textSize)
         initialsPaint.color = a.getColor(R.styleable.AvatarView_avvy_text_color, initialsPaint.color)
@@ -507,7 +510,8 @@ class AvatarView : ImageView {
             canvas.drawCircle(avatarDrawableRect.centerX(), avatarDrawableRect.centerY(), drawableRadius, circleBackgroundPaint)
         }
 
-        if(null != avatarDrawable) {
+        val avatarDrawable = this.avatarDrawable
+        if(null != avatarDrawable && hasAvatar()) {
             canvas.drawCircle(avatarDrawableRect.centerX(), avatarDrawableRect.centerY(), drawableRadius, bitmapPaint)
         } else if(null != initials){
             canvas.drawText(
@@ -523,6 +527,12 @@ class AvatarView : ImageView {
         drawBorder(canvas)
     }
 
+    private fun hasAvatar(): Boolean{
+        val drawable = this.drawable
+        val hasTransparentDrawable = drawable is ColorDrawable && drawable.alpha == 0
+        return !hasTransparentDrawable
+    }
+
     private fun drawBorder(canvas: Canvas) {
         if (isAnimating || isReversedAnimating) {
             val totalDegrees = (270f + animationLoopDegrees) % 360
@@ -536,8 +546,8 @@ class AvatarView : ImageView {
 
     private fun drawArches(totalDegrees: Float, canvas: Canvas) {
         for (i in 0..numberOfArches) {
-            val deg = totalDegrees + (spaceBetweenArches + individualArcDegreeLenght) * i * (animationArchesSparseness)
-            canvas.drawArc(arcBorderRect, deg, individualArcDegreeLenght, false, borderPaint)
+            val deg = totalDegrees + (spaceBetweenArches + individualArcDegreeLength) * i * (animationArchesSparseness)
+            canvas.drawArc(arcBorderRect, deg, individualArcDegreeLength, false, borderPaint)
         }
     }
 

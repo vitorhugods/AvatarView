@@ -25,5 +25,5 @@ internal object Defaults {
 
     const val NUMBER_OF_ARCHES = 5
     const val ARCHES_DEGREES_AREA = 90f
-    const val INDIVIDUAL_ARCH_DEGREES_LENGHT = 3f
+    const val INDIVIDUAL_ARCH_DEGREES_LENGTH = 3f
 }
