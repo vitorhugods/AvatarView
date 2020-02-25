@@ -8,7 +8,6 @@ import android.graphics.*
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
-import android.net.Uri
 import android.os.Build
 import android.util.AttributeSet
 import android.util.Log
@@ -18,6 +17,8 @@ import android.view.ViewOutlineProvider
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
+import kotlin.math.floor
+import kotlin.math.min
 
 
 /**
@@ -282,11 +283,6 @@ class AvatarView : ImageView {
         initializeBitmap()
     }
 
-    override fun setImageURI(uri: Uri) {
-        super.setImageURI(uri)
-        initializeBitmap()
-    }
-
     private fun readAttrs(attrs: AttributeSet, defStyle: Int = 0) {
         isReadingAttributes = true
         val a = context.obtainStyledAttributes(attrs, R.styleable.AvatarView, defStyle, 0)
@@ -330,13 +326,14 @@ class AvatarView : ImageView {
             return
         }
 
+        val avatarDrawable = this.avatarDrawable
         if (avatarDrawable == null) {
             setImageResource(android.R.color.transparent)
             return
         }
 
-        bitmapHeight = avatarDrawable!!.height
-        bitmapWidth = avatarDrawable!!.width
+        bitmapHeight = avatarDrawable.height
+        bitmapWidth = avatarDrawable.width
 
         bitmapShader = BitmapShader(avatarDrawable, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP)
         bitmapPaint.isAntiAlias = true
@@ -347,7 +344,7 @@ class AvatarView : ImageView {
         else borderThickness).toFloat()
 
         borderRect.set(calculateBounds())
-        borderRadius = Math.min((borderRect.height() - currentBorderThickness) / 2.0f, (borderRect.width() - currentBorderThickness) / 2.0f)
+        borderRadius = min((borderRect.height() - currentBorderThickness) / 2.0f, (borderRect.width() - currentBorderThickness) / 2.0f)
 
         val currentBorderGradient = LinearGradient(0f, 0f, borderRect.width(), borderRect.height(),
                 if (isHighlighted) highlightBorderColor else borderColor,
@@ -368,8 +365,8 @@ class AvatarView : ImageView {
         middleRect.set(borderRect)
         middleRect.inset(currentBorderThickness + middleThickness / 2, currentBorderThickness + middleThickness / 2)
 
-        middleRadius = Math.min(Math.floor(middleRect.height() / 2.0), Math.floor(middleRect.width() / 2.0)).toFloat()
-        drawableRadius = Math.min(avatarDrawableRect.height() / 2.0f, avatarDrawableRect.width() / 2.0f)
+        middleRadius = floor(middleRect.height() / 2.0).coerceAtMost(floor(middleRect.width() / 2.0)).toFloat()
+        drawableRadius = (avatarDrawableRect.height() / 2.0f).coerceAtMost(avatarDrawableRect.width() / 2.0f)
 
         middlePaint.apply {
             style = Paint.Style.STROKE
