@@ -9,9 +9,10 @@
     <string name="arches_count">Arches Count</string>
     <string name="arches_area">Arches Area</string>
     <string name="highlight">Highlight</string>
-    <string name="arc_lenght">Arc Lenght</string>
+    <string name="arc_length">Arc Lenght</string>
     <string name="confirm">Confirm</string>
     <string name="cancel">Cancel</string>
     <string name="choose_color">Choose color</string>
     <string name="colors">Colors</string>
+    <string name="it_works">It works!</string>
 </resources>
