@@ -511,7 +511,7 @@ class AvatarView : ImageView {
             canvas.drawCircle(avatarDrawableRect.centerX(), avatarDrawableRect.centerY(), drawableRadius, bitmapPaint)
         } else if(null != initials){
             canvas.drawText(
-                    initials,
+                    initials!!,
                     width.div(2f) - initialsRect.width().div(2f),
                     height.div(2f) + initialsRect.height().div(2f),
                     initialsPaint
