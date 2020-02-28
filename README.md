@@ -7,6 +7,16 @@ A circular Image View with a lot of perks. Including progress animation and high
 ![Kotlin](https://img.shields.io/badge/minSdkVersion-14-brightgreen.svg)
 ![Kotlin](https://img.shields.io/badge/Kotlin-100%25-orange.svg)
 [![GitHub license](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg?style=flat)](http://www.apache.org/licenses/LICENSE-2.0)
+[![Say Thanks!](https://img.shields.io/badge/Say%20Thanks-!-1EAEDB.svg)](https://saythanks.io/to/vitorschwaab@outlook.com)
+
+<div align="center">
+  <sub>Built with ❤︎ by Vitor Hugo Schwaab and
+  <a href="https://github.com/vitorhugods/AvatarView/graphs/contributors">
+    contributors
+  </a>
+</div>
+<br/>
+
 ### Samples
 |   |   |
 |:-:|:-:|
