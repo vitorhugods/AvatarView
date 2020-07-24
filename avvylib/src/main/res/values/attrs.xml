@@ -22,5 +22,10 @@
         <attr name="avvy_text" format="string"/>
         <attr name="avvy_text_size" format="dimension"/>
         <attr name="avvy_text_color" format="color"/>
+
+        <attr name="avvy_show_badge" format="boolean" />
+        <attr name="avvy_badge_color" format="color" />
+        <attr name="avvy_badge_stroke_color" format="color" />
+        <attr name="avvy_badge_stroke_width" format="dimension" />
     </declare-styleable>
 </resources>

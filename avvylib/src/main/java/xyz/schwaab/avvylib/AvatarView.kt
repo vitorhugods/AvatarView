@@ -47,6 +47,8 @@ class AvatarView : ImageView {
         textSize = 20f
         setup()
     }
+    private val badgePaint = Paint()
+    private val badgeStrokePaint = Paint()
 
     private var middleThickness = 0f
     private val avatarInset
@@ -60,6 +62,7 @@ class AvatarView : ImageView {
     private var drawableRadius = 0f
     private var middleRadius = 0f
     private var borderRadius = 0f
+    private var badgeRadius = 0f
 
     private var animationArchesSparseness = 0f
 
@@ -205,6 +208,42 @@ class AvatarView : ImageView {
             setup()
         }
 
+    /**
+     * The color of the badge.
+     */
+    var badgeColor = Defaults.BADGE_COLOR
+        set(value) {
+            field = value
+            setup()
+        }
+
+    /**
+     * The color of the stroke of the badge.
+     */
+    var badgeStrokeColor = Defaults.BADGE_STROKE_COLOR
+        set(value) {
+            field = value
+            setup()
+        }
+
+    /**
+     * The stroke width (in pixels) of the badge.
+     */
+    var badgeStrokeWidth = 0
+        set(value) {
+            field = if (value <= 0) 0 else value
+            setup()
+        }
+
+    /**
+     * Flag to toggle visibility of the badge.
+     */
+    var showBadge = Defaults.SHOW_BADGE
+        set(value) {
+            field = value
+            setup()
+        }
+
     private var initials: String? = null
 
     private val spaceBetweenArches
@@ -330,6 +369,11 @@ class AvatarView : ImageView {
         initialsPaint.color = a.getColor(R.styleable.AvatarView_avvy_text_color, initialsPaint.color)
         text = a.getString(R.styleable.AvatarView_avvy_text)
 
+        showBadge = a.getBoolean(R.styleable.AvatarView_avvy_show_badge, Defaults.SHOW_BADGE)
+        badgeColor = a.getColor(R.styleable.AvatarView_avvy_badge_color, Defaults.BADGE_COLOR)
+        badgeStrokeColor = a.getColor(R.styleable.AvatarView_avvy_badge_stroke_color, Defaults.BADGE_STROKE_COLOR)
+        badgeStrokeWidth = a.getDimensionPixelSize(R.styleable.AvatarView_avvy_badge_stroke_width, badgeStrokeWidth)
+
         a.recycle()
         isReadingAttributes = false
     }
@@ -369,6 +413,7 @@ class AvatarView : ImageView {
 
         borderRect.set(calculateBounds())
         borderRadius = min((borderRect.height() - currentBorderThickness) / 2.0f, (borderRect.width() - currentBorderThickness) / 2.0f)
+        badgeRadius = borderRadius / 4
 
         val currentBorderGradient = LinearGradient(0f, 0f, borderRect.width(), borderRect.height(),
                 if (isHighlighted) highlightBorderColor else borderColor,
@@ -408,6 +453,18 @@ class AvatarView : ImageView {
         arcBorderRect.apply {
             set(borderRect)
             inset(currentBorderThickness / 2f, currentBorderThickness / 2f)
+        }
+
+        badgePaint.apply {
+            style = Paint.Style.FILL
+            isAntiAlias = true
+            color = badgeColor
+        }
+
+        badgeStrokePaint.apply {
+            style = Paint.Style.FILL
+            isAntiAlias = true
+            color = badgeStrokeColor
         }
 
         updateShaderMatrix()
@@ -525,6 +582,12 @@ class AvatarView : ImageView {
             canvas.drawCircle(middleRect.centerX(), middleRect.centerY(), middleRadius, middlePaint)
         }
         drawBorder(canvas)
+        if (showBadge && badgeColor != Color.TRANSPARENT) {
+            if (badgeStrokeWidth > 0) {
+                canvas.drawCircle(arcBorderRect.right - badgeRadius, arcBorderRect.bottom - badgeRadius, badgeRadius , badgeStrokePaint)
+            }
+            canvas.drawCircle(arcBorderRect.right - badgeRadius, arcBorderRect.bottom - badgeRadius, badgeRadius - badgeStrokeWidth, badgePaint)
+        }
     }
 
     private fun hasAvatar(): Boolean{

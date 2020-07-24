@@ -26,4 +26,8 @@ internal object Defaults {
     const val NUMBER_OF_ARCHES = 5
     const val ARCHES_DEGREES_AREA = 90f
     const val INDIVIDUAL_ARCH_DEGREES_LENGTH = 3f
+
+    const val SHOW_BADGE = false
+    val BADGE_COLOR = Color.parseColor("#00FF00")
+    val BADGE_STROKE_COLOR = Color.parseColor("#FFFFFF")
 }
