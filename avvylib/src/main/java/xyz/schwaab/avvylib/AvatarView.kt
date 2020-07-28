@@ -12,6 +12,7 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import android.util.AttributeSet
 import android.util.Log
+import android.util.TypedValue
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewOutlineProvider
@@ -62,7 +63,6 @@ class AvatarView : ImageView {
     private var drawableRadius = 0f
     private var middleRadius = 0f
     private var borderRadius = 0f
-    private var badgeRadius = 0f
 
     private var animationArchesSparseness = 0f
 
@@ -209,6 +209,15 @@ class AvatarView : ImageView {
         }
 
     /**
+     * The radius (in dp) of the badge
+     */
+    var badgeRadius = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, Defaults.BADGE_RADIUS, resources.displayMetrics)
+        set(value) {
+            field = value
+            setup()
+        }
+
+    /**
      * The color of the badge.
      */
     var badgeColor = Defaults.BADGE_COLOR
@@ -239,6 +248,21 @@ class AvatarView : ImageView {
      * Flag to toggle visibility of the badge.
      */
     var showBadge = Defaults.SHOW_BADGE
+        set(value) {
+            field = value
+            setup()
+        }
+
+    /**
+     * Position of the badge with respect to [borderRect]
+     *
+     * Should be one of:
+     * @see [BadgePosition.BOTTOM_RIGHT]
+     * @see [BadgePosition.BOTTOM_LEFT]
+     * @see [BadgePosition.TOP_RIGHT]
+     * @see [BadgePosition.TOP_LEFT]
+     */
+    var badgePosition = BadgePosition.BOTTOM_RIGHT
         set(value) {
             field = value
             setup()
@@ -373,6 +397,8 @@ class AvatarView : ImageView {
         badgeColor = a.getColor(R.styleable.AvatarView_avvy_badge_color, Defaults.BADGE_COLOR)
         badgeStrokeColor = a.getColor(R.styleable.AvatarView_avvy_badge_stroke_color, Defaults.BADGE_STROKE_COLOR)
         badgeStrokeWidth = a.getDimensionPixelSize(R.styleable.AvatarView_avvy_badge_stroke_width, badgeStrokeWidth)
+        badgeRadius = a.getDimension(R.styleable.AvatarView_avvy_badge_radius, badgeRadius)
+        badgePosition = BadgePosition.values()[a.getInt(R.styleable.AvatarView_avvy_badge_position, 0)]
 
         a.recycle()
         isReadingAttributes = false
@@ -413,7 +439,6 @@ class AvatarView : ImageView {
 
         borderRect.set(calculateBounds())
         borderRadius = min((borderRect.height() - currentBorderThickness) / 2.0f, (borderRect.width() - currentBorderThickness) / 2.0f)
-        badgeRadius = borderRadius / 4
 
         val currentBorderGradient = LinearGradient(0f, 0f, borderRect.width(), borderRect.height(),
                 if (isHighlighted) highlightBorderColor else borderColor,
@@ -583,10 +608,30 @@ class AvatarView : ImageView {
         }
         drawBorder(canvas)
         if (showBadge && badgeColor != Color.TRANSPARENT) {
-            if (badgeStrokeWidth > 0) {
-                canvas.drawCircle(arcBorderRect.right - badgeRadius, arcBorderRect.bottom - badgeRadius, badgeRadius , badgeStrokePaint)
+            var badgeCx = 0f
+            var badgeCy = 0f
+            when (badgePosition) {
+                BadgePosition.BOTTOM_RIGHT -> {
+                    badgeCx = borderRect.right - badgeRadius
+                    badgeCy = borderRect.bottom - badgeRadius
+                }
+                BadgePosition.BOTTOM_LEFT -> {
+                    badgeCx = borderRect.left + badgeRadius
+                    badgeCy = borderRect.bottom - badgeRadius
+                }
+                BadgePosition.TOP_RIGHT -> {
+                    badgeCx = borderRect.right - badgeRadius
+                    badgeCy = borderRect.top + badgeRadius
+                }
+                BadgePosition.TOP_LEFT -> {
+                    badgeCx = borderRect.left + badgeRadius
+                    badgeCy = borderRect.top + badgeRadius
+                }
             }
-            canvas.drawCircle(arcBorderRect.right - badgeRadius, arcBorderRect.bottom - badgeRadius, badgeRadius - badgeStrokeWidth, badgePaint)
+            if (badgeStrokeWidth > 0) {
+                canvas.drawCircle(badgeCx, badgeCy, badgeRadius, badgeStrokePaint)
+            }
+            canvas.drawCircle(badgeCx, badgeCy, badgeRadius - badgeStrokeWidth, badgePaint)
         }
     }
 
