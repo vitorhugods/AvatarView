@@ -30,6 +30,12 @@ Supports initials if no image is provided:
 
 Thanks to [@anoop44](https://github.com/anoop44)
 
+Supports a badge, for "online/offline" status or other use cases:
+
+<img  src="/pics/badge.png" alt="Badge" width="200" style="max-width:100%;">
+
+Thanks to [@p1yu5h](https://github.com/p1yu5h)
+
 ## Demo
 [Watch the video](https://vimeo.com/291110435) or clone the repo and build the demo app
 
@@ -65,9 +71,18 @@ Just add this to your XML:
 
 Add the name initials as fallback:
 ```xml
-        app:avvy_text="Avatar View" //will show up as AV
+        app:avvy_text="Avatar View"                 //will show up as AV
         app:avvy_text_size="42sp"
         app:avvy_text_color="#ccc"
+```
+
+Add the badge if you want:
+```xml
+        app:avvy_show_badge="true"                  //Default = false
+        app:avvy_badge_radius="18dp"
+        app:avvy_badge_stroke_width="2dp"
+        app:avvy_badge_stroke_color="@color/white"
+        app:avvy_badge_position="BOTTOM_RIGHT"      //Default value
 ```
 
 You can personalize it in Kotlin:
@@ -80,6 +95,8 @@ You can personalize it in Kotlin:
             numberOfArches = 0
             totalArchesDegreeArea = 80
             text = "Avatar View"
+            showBadge = true
+            badgePosition = BadgePosition.TOP_LEFT
         }
 ```
 

@@ -7,6 +7,7 @@ import com.flask.colorpicker.ColorPickerView
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder
 import kotlinx.android.synthetic.main.activity_main.*
 import xyz.schwaab.avvylib.AvatarView
+import xyz.schwaab.avvylib.BadgePosition
 
 class MainActivity : AppCompatActivity() {
 
@@ -59,6 +60,7 @@ class MainActivity : AppCompatActivity() {
                 viewColorEnd.setBackgroundColor(it)
                 updateAvatars {
                     borderColorEnd = it
+                    badgePosition = BadgePosition.TOP_LEFT
                 }
             }
         }
