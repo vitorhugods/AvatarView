@@ -12,6 +12,7 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import android.util.AttributeSet
 import android.util.Log
+import android.util.TypedValue
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewOutlineProvider
@@ -47,6 +48,8 @@ class AvatarView : ImageView {
         textSize = 20f
         setup()
     }
+    private val badgePaint = Paint()
+    private val badgeStrokePaint = Paint()
 
     private var middleThickness = 0f
     private val avatarInset
@@ -205,6 +208,66 @@ class AvatarView : ImageView {
             setup()
         }
 
+    /**
+     * The radius (in dp) of the badge
+     */
+    var badgeRadius = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, Defaults.BADGE_RADIUS, resources.displayMetrics)
+        set(value) {
+            field = value
+            setup()
+        }
+
+    /**
+     * The color of the badge.
+     */
+    var badgeColor = Defaults.BADGE_COLOR
+        set(value) {
+            field = value
+            setup()
+        }
+
+    /**
+     * The color of the stroke of the badge.
+     */
+    var badgeStrokeColor = Defaults.BADGE_STROKE_COLOR
+        set(value) {
+            field = value
+            setup()
+        }
+
+    /**
+     * The stroke width (in pixels) of the badge.
+     */
+    var badgeStrokeWidth = 0
+        set(value) {
+            field = if (value <= 0) 0 else value
+            setup()
+        }
+
+    /**
+     * Flag to toggle visibility of the badge.
+     */
+    var showBadge = Defaults.SHOW_BADGE
+        set(value) {
+            field = value
+            setup()
+        }
+
+    /**
+     * Position of the badge with respect to [borderRect]
+     *
+     * Should be one of:
+     * @see [BadgePosition.BOTTOM_RIGHT]
+     * @see [BadgePosition.BOTTOM_LEFT]
+     * @see [BadgePosition.TOP_RIGHT]
+     * @see [BadgePosition.TOP_LEFT]
+     */
+    var badgePosition = BadgePosition.BOTTOM_RIGHT
+        set(value) {
+            field = value
+            setup()
+        }
+
     private var initials: String? = null
 
     private val spaceBetweenArches
@@ -330,6 +393,13 @@ class AvatarView : ImageView {
         initialsPaint.color = a.getColor(R.styleable.AvatarView_avvy_text_color, initialsPaint.color)
         text = a.getString(R.styleable.AvatarView_avvy_text)
 
+        showBadge = a.getBoolean(R.styleable.AvatarView_avvy_show_badge, Defaults.SHOW_BADGE)
+        badgeColor = a.getColor(R.styleable.AvatarView_avvy_badge_color, Defaults.BADGE_COLOR)
+        badgeStrokeColor = a.getColor(R.styleable.AvatarView_avvy_badge_stroke_color, Defaults.BADGE_STROKE_COLOR)
+        badgeStrokeWidth = a.getDimensionPixelSize(R.styleable.AvatarView_avvy_badge_stroke_width, badgeStrokeWidth)
+        badgeRadius = a.getDimension(R.styleable.AvatarView_avvy_badge_radius, badgeRadius)
+        badgePosition = BadgePosition.values()[a.getInt(R.styleable.AvatarView_avvy_badge_position, 0)]
+
         a.recycle()
         isReadingAttributes = false
     }
@@ -408,6 +478,18 @@ class AvatarView : ImageView {
         arcBorderRect.apply {
             set(borderRect)
             inset(currentBorderThickness / 2f, currentBorderThickness / 2f)
+        }
+
+        badgePaint.apply {
+            style = Paint.Style.FILL
+            isAntiAlias = true
+            color = badgeColor
+        }
+
+        badgeStrokePaint.apply {
+            style = Paint.Style.FILL
+            isAntiAlias = true
+            color = badgeStrokeColor
         }
 
         updateShaderMatrix()
@@ -525,6 +607,32 @@ class AvatarView : ImageView {
             canvas.drawCircle(middleRect.centerX(), middleRect.centerY(), middleRadius, middlePaint)
         }
         drawBorder(canvas)
+        if (showBadge && badgeColor != Color.TRANSPARENT) {
+            var badgeCx = 0f
+            var badgeCy = 0f
+            when (badgePosition) {
+                BadgePosition.BOTTOM_RIGHT -> {
+                    badgeCx = borderRect.right - badgeRadius
+                    badgeCy = borderRect.bottom - badgeRadius
+                }
+                BadgePosition.BOTTOM_LEFT -> {
+                    badgeCx = borderRect.left + badgeRadius
+                    badgeCy = borderRect.bottom - badgeRadius
+                }
+                BadgePosition.TOP_RIGHT -> {
+                    badgeCx = borderRect.right - badgeRadius
+                    badgeCy = borderRect.top + badgeRadius
+                }
+                BadgePosition.TOP_LEFT -> {
+                    badgeCx = borderRect.left + badgeRadius
+                    badgeCy = borderRect.top + badgeRadius
+                }
+            }
+            if (badgeStrokeWidth > 0) {
+                canvas.drawCircle(badgeCx, badgeCy, badgeRadius, badgeStrokePaint)
+            }
+            canvas.drawCircle(badgeCx, badgeCy, badgeRadius - badgeStrokeWidth, badgePaint)
+        }
     }
 
     private fun hasAvatar(): Boolean{
