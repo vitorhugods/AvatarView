@@ -1,31 +1,8 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'jacoco-android'
+apply plugin: 'com.novoda.bintray-release'
 
-ext {
-    bintrayRepo = 'AvatarView'
-    bintrayName = 'avvylib'
-
-    publishedGroupId = 'xyz.schwaab'
-    libraryName = 'avvylib'
-    artifact = 'avvylib'
-    group = publishedGroupId
-
-    libraryDescription = 'A circular ImageView with border, progress animation and customizable highlights for Android'
-
-    siteUrl = 'https://github.com/vitorhugods/AvatarView'
-    gitUrl = 'https://github.com/vitorhugods/AvatarView.git'
-
-    libraryVersion = '1.0.0'
-
-    developerId = 'vitorhugods'
-    developerName = 'Vitor Hugo D. Schwaab'
-    developerEmail = 'vitorschwaab@gmail.com'
-
-    licenseName = 'The Apache Software License, Version 2.0'
-    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-    allLicenses = ["Apache-2.0"]
-}
 android {
     compileSdkVersion 29
 
@@ -46,6 +23,22 @@ android {
     }
 }
 
+def publishingGroupId = "xyz.schwaab"
+def publishingArtifactId = "avvylib"
+def publishingVersion = "1.1.0"
+def publishingDescription = 'A circular ImageView with border, progress animation and customizable highlights for Android'
+def publishingUrl = 'https://github.com/vitorhugods/AvatarView'
+
+publish{
+    userOrg = 'vitorhugods'
+    repoName = 'AvatarView'
+    groupId = publishingGroupId
+    artifactId = publishingArtifactId
+    publishVersion = publishingVersion
+    desc = publishingDescription
+    website = publishingUrl
+}
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     compileOnly 'androidx.annotation:annotation:1.1.0'
@@ -57,9 +50,4 @@ dependencies {
 
 repositories {
     mavenCentral()
-}
-
-if (project.rootProject.file('local.properties').exists()) {
-    apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
-    apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/bintrayv1.gradle'
 }
