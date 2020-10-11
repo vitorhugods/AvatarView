@@ -1,8 +1,9 @@
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-apply plugin: 'jacoco-android'
-apply plugin: 'com.novoda.bintray-release'
+apply plugin: "com.android.library"
+apply plugin: "kotlin-android"
+apply plugin: "jacoco-android"
+apply plugin: "com.novoda.bintray-release"
 
+def version = "1.1.0"
 android {
     compileSdkVersion 29
 
@@ -10,7 +11,7 @@ android {
         minSdkVersion 14
         targetSdkVersion 29
         versionCode 1
-        versionName "1.0.0"
+        versionName version
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -18,36 +19,30 @@ android {
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
     }
 }
 
-def publishingGroupId = "xyz.schwaab"
-def publishingArtifactId = "avvylib"
-def publishingVersion = "1.1.0"
-def publishingDescription = 'A circular ImageView with border, progress animation and customizable highlights for Android'
-def publishingUrl = 'https://github.com/vitorhugods/AvatarView'
-
 publish{
-    userOrg = 'vitorhugods'
-    repoName = 'AvatarView'
-    groupId = publishingGroupId
-    artifactId = publishingArtifactId
-    publishVersion = publishingVersion
-    desc = publishingDescription
-    website = publishingUrl
-}
-
-dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    compileOnly 'androidx.annotation:annotation:1.1.0'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test:core:1.2.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    userOrg = "vitorhugods"
+    repoName = "AvatarView"
+    groupId = "xyz.schwaab"
+    artifactId = "avvylib"
+    publishVersion = version
+    desc = "A circular ImageView with border, progress animation and customizable highlights for Android"
+    website = "https://github.com/vitorhugods/AvatarView"
 }
 
 repositories {
     mavenCentral()
+}
+
+dependencies {
+    implementation fileTree(dir: "libs", include: ["*.jar"])
+    compileOnly "androidx.annotation:annotation:1.1.0"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    testImplementation "junit:junit:4.12"
+    androidTestImplementation "androidx.test:core:1.2.0"
+    androidTestImplementation "androidx.test.espresso:espresso-core:3.2.0"
 }
