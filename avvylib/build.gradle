@@ -1,31 +1,9 @@
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-apply plugin: 'jacoco-android'
+apply plugin: "com.android.library"
+apply plugin: "kotlin-android"
+apply plugin: "jacoco-android"
+apply plugin: "com.novoda.bintray-release"
 
-ext {
-    bintrayRepo = 'AvatarView'
-    bintrayName = 'avvylib'
-
-    publishedGroupId = 'xyz.schwaab'
-    libraryName = 'avvylib'
-    artifact = 'avvylib'
-    group = publishedGroupId
-
-    libraryDescription = 'A circular ImageView with border, progress animation and customizable highlights for Android'
-
-    siteUrl = 'https://github.com/vitorhugods/AvatarView'
-    gitUrl = 'https://github.com/vitorhugods/AvatarView.git'
-
-    libraryVersion = '1.0.0'
-
-    developerId = 'vitorhugods'
-    developerName = 'Vitor Hugo D. Schwaab'
-    developerEmail = 'vitorschwaab@gmail.com'
-
-    licenseName = 'The Apache Software License, Version 2.0'
-    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-    allLicenses = ["Apache-2.0"]
-}
+def version = "1.1.0"
 android {
     compileSdkVersion 29
 
@@ -33,7 +11,7 @@ android {
         minSdkVersion 14
         targetSdkVersion 29
         versionCode 1
-        versionName "1.0.0"
+        versionName version
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -41,25 +19,30 @@ android {
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
     }
 }
 
-dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    compileOnly 'androidx.annotation:annotation:1.1.0'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'androidx.test:core:1.2.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+publish{
+    userOrg = "vitorhugods"
+    repoName = "AvatarView"
+    groupId = "xyz.schwaab"
+    artifactId = "avvylib"
+    publishVersion = version
+    desc = "A circular ImageView with border, progress animation and customizable highlights for Android"
+    website = "https://github.com/vitorhugods/AvatarView"
 }
 
 repositories {
     mavenCentral()
 }
 
-if (project.rootProject.file('local.properties').exists()) {
-    apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/installv1.gradle'
-    apply from: 'https://raw.githubusercontent.com/nuuneoi/JCenter/master/bintrayv1.gradle'
+dependencies {
+    implementation fileTree(dir: "libs", include: ["*.jar"])
+    compileOnly "androidx.annotation:annotation:1.1.0"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    testImplementation "junit:junit:4.12"
+    androidTestImplementation "androidx.test:core:1.2.0"
+    androidTestImplementation "androidx.test.espresso:espresso-core:3.2.0"
 }
