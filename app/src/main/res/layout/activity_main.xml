@@ -20,6 +20,7 @@
         app:avvy_badge_radius="18dp"
         app:avvy_badge_stroke_width="2dp"
         app:avvy_badge_stroke_color="@color/white"
+        app:avvy_badge_position="BOTTOM_RIGHT"
         app:avvy_border_thickness="2dp"
         app:avvy_border_thickness_highlight="3dp"
         app:avvy_circle_background_color="@color/grey800"
