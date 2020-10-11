@@ -1,7 +1,7 @@
 # AvatarView
 A circular Image View with a lot of perks. Including progress animation and highlight state with borders and gradient color.
 
-[![Build Status](https://travis-ci.com/vitorhugods/AvatarView.svg?branch=master)](https://travis-ci.com/vitorhugods/AvatarView)
+[![Build Status](https://travis-ci.com/vitorhugods/AvatarView.svg?branch=main)](https://travis-ci.com/vitorhugods/AvatarView)
 [![Gradle](https://img.shields.io/badge/Version-1.0.0-brightgreen.svg)](https://github.com/vitorhugods/AvatarView/releases)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/e4847d7f36754c1a8efb1aff838fdb91)](https://app.codacy.com/app/vitorhugods/AvatarView?utm_source=github.com&utm_medium=referral&utm_content=vitorhugods/AvatarView&utm_campaign=Badge_Grade_Dashboard)
 ![Kotlin](https://img.shields.io/badge/minSdkVersion-14-brightgreen.svg)
