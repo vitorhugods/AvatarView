@@ -5,7 +5,7 @@ plugins {
     id("com.github.panpf.bintray-publish")
 }
 val kotlinVersion: String by project
-val version = "1.1.0"
+val version = "1.1.1"
 android {
     setCompileSdkVersion(AndroidModuleSpecs.compileSdkVersion)
 
@@ -33,6 +33,7 @@ configure<com.github.panpf.bintray.publish.PublishExtension> {
     publishVersion = version
     desc = "A circular ImageView with border, progress animation and customizable highlights for Android"
     website = "https://github.com/vitorhugods/AvatarView"
+    isSign = true
 }
 
 repositories {
