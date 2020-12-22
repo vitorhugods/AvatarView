@@ -55,6 +55,11 @@ dependencies {
 }
 ```
 
+## Version 1.1.0
+There's a known problem with the version 1.1.0 available on JCenter. Its `aar` file is basically empty, causing the class `AvatarView` to not be found.
+This was caused by enabling minify by mistake and was fixed right after.
+Please use the version `1.1.1` and be happy with that.
+
 ## Usage
 
 Just add this to your XML:
