@@ -48,7 +48,7 @@ dependencies {
     implementation("xyz.schwaab:avvylib:1.1.1")
 }
 ```
-* Or, Groovy `build.gradle.kts`
+* Or, Groovy `build.gradle`
 ```gradle
 dependencies {
     implementation "xyz.schwaab:avvylib:1.1.1"
