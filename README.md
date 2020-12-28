@@ -114,6 +114,47 @@ Or, in Java:
         avatarView.setTotalArchesDegreeArea(80);
 ```
 
+### Custom Animations
+
+Create an AvatarViewAnimationOrchestrator, passing at least one AvatarViewAnimator.
+
+The `setupAnimators` is first run, and runs in reverse when animation is stopping.
+The `progressAnimators` can run indefinitely.
+
+Full Example:
+```kotlin
+
+    val archesExpansion = object: AvatarViewAnimator{
+        override val baseAnimator = ValueAnimator.ofFloat(0f, 1f).apply {
+            repeatMode = ValueAnimator.REVERSE
+            duration = 500L
+            interpolator = DecelerateInterpolator()
+        }
+    
+        override fun onValueUpdate(animatorInterface: AvatarView.AnimatorInterface) {
+            val animatedValue = baseAnimator.animatedValue as Float
+            animatorInterface.updateAnimationState { currentState ->
+                currentState.copy(archesExpansionProgress = animatedValue)
+            }
+        }
+    }
+    val bouncingRotation = object : AvatarViewAnimator {
+        override val baseAnimator = ValueAnimator.ofFloat(0f, 1f).apply {
+            repeatCount = ValueAnimator.INFINITE
+            duration = 3000L
+            interpolator = BounceInterpolator()
+        }
+    
+        override fun onValueUpdate(animatorInterface: AvatarView.AnimatorInterface) {
+            val animatedValue = baseAnimator.animatedValue as Float
+            animatorInterface.updateAnimationState { currentState ->
+                currentState.copy(rotationProgress = animatedValue)
+            }
+        }
+    }
+
+    avatarView.animationOrchestrator = AvatarViewAnimationOrchestrator(archesExpansion, bouncingRotation) 
+```
 
 ### Special Thanks
 The roundness of the drawables based on [Henning Dodenhof's Circle ImageView](https://github.com/hdodenhof/CircleImageView)

@@ -1,6 +1,5 @@
 package xyz.schwaab.avvylib
 
-import android.animation.AnimatorSet
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
@@ -19,6 +18,8 @@ import android.view.ViewOutlineProvider
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
+import xyz.schwaab.avvylib.animation.AvatarViewAnimationOrchestrator
+import xyz.schwaab.avvylib.animation.DefaultAnimationOrchestrator
 import kotlin.math.floor
 import kotlin.math.max
 import kotlin.math.min
@@ -53,7 +54,10 @@ class AvatarView : ImageView {
 
     private var middleThickness = 0f
     private val avatarInset
-        get() = distanceToBorder + max(borderThickness.toFloat(), highlightedBorderThickness.toFloat())
+        get() = distanceToBorder + max(
+            borderThickness.toFloat(),
+            highlightedBorderThickness.toFloat()
+        )
 
     private var avatarDrawable: Bitmap? = null
     private var bitmapShader: BitmapShader? = null
@@ -63,8 +67,6 @@ class AvatarView : ImageView {
     private var drawableRadius = 0f
     private var middleRadius = 0f
     private var borderRadius = 0f
-
-    private var animationArchesSparseness = 0f
 
     /**
      * The length (in degrees) available for the arches when animating.
@@ -86,6 +88,7 @@ class AvatarView : ImageView {
             logWarningOnArcLengthIfNeeded()
             setup()
         }
+
     /**
      * The length (in degrees) of each arch when animating.
      * Keep in mind that the arches may overlap if this value is too high
@@ -100,7 +103,10 @@ class AvatarView : ImageView {
 
     private fun logWarningOnArcLengthIfNeeded() {
         if (individualArcDegreeLength * numberOfArches > totalArchesDegreeArea)
-            Log.w(TAG, "The arches are too big for them to be visible. (i.e. individualArcLength * numberOfArches > totalArchesDegreeArea)")
+            Log.w(
+                TAG,
+                "The arches are too big for them to be visible. (i.e. individualArcLength * numberOfArches > totalArchesDegreeArea)"
+            )
     }
 
     /**
@@ -112,6 +118,7 @@ class AvatarView : ImageView {
             field = value
             setup()
         }
+
     /**
      * The border color.
      * Remember: The border is colored using a gradient.
@@ -122,6 +129,7 @@ class AvatarView : ImageView {
             field = value
             setup()
         }
+
     /**
      * The second color of the border gradient.
      * Remember: The border is colored using a gradient.
@@ -132,6 +140,7 @@ class AvatarView : ImageView {
             field = value
             setup()
         }
+
     /**
      * The border color when highlighted.
      * Remember: The border is colored using a gradient.
@@ -142,6 +151,7 @@ class AvatarView : ImageView {
             field = value
             setup()
         }
+
     /**
      * The second color of the border gradient when highlighted.
      * Remember: The border is colored using a gradient.
@@ -164,6 +174,7 @@ class AvatarView : ImageView {
             field = if (value <= 0) 0 else value
             setup()
         }
+
     /**
      * The border thickness (in pixels) when not highlighted
      */
@@ -172,6 +183,7 @@ class AvatarView : ImageView {
             field = if (value <= 0) 0 else value
             setup()
         }
+
     /**
      * The border thickness (in pixels) when highlighted
      */
@@ -211,7 +223,11 @@ class AvatarView : ImageView {
     /**
      * The radius (in dp) of the badge
      */
-    var badgeRadius = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, Defaults.BADGE_RADIUS, resources.displayMetrics)
+    var badgeRadius = TypedValue.applyDimension(
+        TypedValue.COMPLEX_UNIT_DIP,
+        Defaults.BADGE_RADIUS,
+        resources.displayMetrics
+    )
         set(value) {
             field = value
             setup()
@@ -273,10 +289,19 @@ class AvatarView : ImageView {
     private val spaceBetweenArches
         get() = totalArchesDegreeArea / (numberOfArches) - individualArcDegreeLength
 
-    private val currentAnimationArchesArea
-        get() = animationArchesSparseness * totalArchesDegreeArea
+    private val animatorInterface = AnimatorInterface()
+    private var animationDrawingState = AnimationDrawingState(0f, 0f)
 
-    private var animationLoopDegrees = 0f
+    private val AnimationDrawingState.archesAreaInDegrees: Float
+        get() {
+            return coercedArchesExpansionProgress * totalArchesDegreeArea
+        }
+
+    private val AnimationDrawingState.rotationInDegrees: Float
+        get() {
+            return coercedRotationProgress * 360
+        }
+
     private var isReadingAttributes = false
 
     /**
@@ -297,26 +322,26 @@ class AvatarView : ImageView {
         }
     }
 
-    private val setupAnimator = Animation.getSetupAnimator().apply {
-        addUpdateListener {
-            animationArchesSparseness = it.animatedValue as Float
-            invalidate()
+    var animationOrchestrator: AvatarViewAnimationOrchestrator =
+        DefaultAnimationOrchestrator.create().also {
+            attachOrchestrator(it)
         }
-        addListener(onAnimationEnd {
+        set(value) {
+            if (field == value) return
+            field.cancel()
+            field = value
+            attachOrchestrator(field)
+        }
+
+    private fun attachOrchestrator(animationOrchestrator: AvatarViewAnimationOrchestrator) {
+        animationOrchestrator.attach(animatorInterface) {
             if (isReversedAnimating) {
-                animationLoopDegrees = 0f
+                animationDrawingState = animationDrawingState.copy(
+                    rotationProgress = 0f
+                )
                 isReversedAnimating = false
             }
-        })
-    }
-    private val loopAnimator = Animation.getLoopAnimator().apply {
-        addUpdateListener {
-            animationLoopDegrees = it.animatedValue as Float
-            invalidate()
         }
-    }
-    private val animatorSet = AnimatorSet().apply {
-        playSequentially(setupAnimator, loopAnimator)
     }
 
     private var isReversedAnimating = false
@@ -325,13 +350,13 @@ class AvatarView : ImageView {
         set(value) {
             if (value && !field) {
                 if (isReversedAnimating) {
-                    setupAnimator.reverse()
+                    animationOrchestrator.reverse()
                 }
-                animatorSet.start()
+                animationOrchestrator.start()
             } else if (!value && field) {
                 isReversedAnimating = true
-                animatorSet.cancel()
-                setupAnimator.reverse()
+                animationOrchestrator.cancel()
+                animationOrchestrator.reverse()
             }
             field = value
             setup()
@@ -346,7 +371,11 @@ class AvatarView : ImageView {
         init()
     }
 
-    constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle) {
+    constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(
+        context,
+        attrs,
+        defStyle
+    ) {
         readAttrs(attrs, defStyle)
         init()
     }
@@ -370,41 +399,72 @@ class AvatarView : ImageView {
         isReadingAttributes = true
         val a = context.obtainStyledAttributes(attrs, R.styleable.AvatarView, defStyle, 0)
 
-        avatarBackgroundColor = a.getColor(R.styleable.AvatarView_avvy_circle_background_color,
-                Defaults.CIRCLE_BACKGROUND_COLOR)
+        avatarBackgroundColor = a.getColor(
+            R.styleable.AvatarView_avvy_circle_background_color,
+            Defaults.CIRCLE_BACKGROUND_COLOR
+        )
 
-        distanceToBorder = a.getDimensionPixelSize(R.styleable.AvatarView_avvy_distance_to_border, Defaults.DISTANCE_TO_BORDER)
-        borderThickness = a.getDimensionPixelSize(R.styleable.AvatarView_avvy_border_thickness, Defaults.BORDER_THICKNESS)
-        highlightedBorderThickness = a.getDimensionPixelSize(R.styleable.AvatarView_avvy_border_thickness_highlight, Defaults.HIGHLIGHTED_BORDER_THICKNESS)
+        distanceToBorder = a.getDimensionPixelSize(
+            R.styleable.AvatarView_avvy_distance_to_border,
+            Defaults.DISTANCE_TO_BORDER
+        )
+        borderThickness = a.getDimensionPixelSize(
+            R.styleable.AvatarView_avvy_border_thickness,
+            Defaults.BORDER_THICKNESS
+        )
+        highlightedBorderThickness = a.getDimensionPixelSize(
+            R.styleable.AvatarView_avvy_border_thickness_highlight,
+            Defaults.HIGHLIGHTED_BORDER_THICKNESS
+        )
 
         middleColor = a.getColor(R.styleable.AvatarView_avvy_middle_color, Defaults.MIDDLE_COLOR)
         borderColor = a.getColor(R.styleable.AvatarView_avvy_border_color, Defaults.BORDER_COLOR)
         borderColorEnd = a.getColor(R.styleable.AvatarView_avvy_border_color_end, borderColor)
-        highlightBorderColor = a.getColor(R.styleable.AvatarView_avvy_border_highlight_color, Defaults.BORDER_COLOR_HIGHLIGHT)
-        highlightBorderColorEnd = a.getColor(R.styleable.AvatarView_avvy_border_highlight_color_end, highlightBorderColor)
+        highlightBorderColor = a.getColor(
+            R.styleable.AvatarView_avvy_border_highlight_color,
+            Defaults.BORDER_COLOR_HIGHLIGHT
+        )
+        highlightBorderColorEnd =
+            a.getColor(R.styleable.AvatarView_avvy_border_highlight_color_end, highlightBorderColor)
 
-        isHighlighted = a.getBoolean(R.styleable.AvatarView_avvy_highlighted, Defaults.IS_HIGHLIGHTED)
+        isHighlighted =
+            a.getBoolean(R.styleable.AvatarView_avvy_highlighted, Defaults.IS_HIGHLIGHTED)
 
-        totalArchesDegreeArea = a.getFloat(R.styleable.AvatarView_avvy_loading_arches_degree_area, Defaults.ARCHES_DEGREES_AREA)
-        numberOfArches = a.getInt(R.styleable.AvatarView_avvy_loading_arches, Defaults.NUMBER_OF_ARCHES)
-        individualArcDegreeLength = a.getFloat(R.styleable.AvatarView_avvy_loading_arc_degree_length, Defaults.INDIVIDUAL_ARCH_DEGREES_LENGTH)
+        totalArchesDegreeArea = a.getFloat(
+            R.styleable.AvatarView_avvy_loading_arches_degree_area,
+            Defaults.ARCHES_DEGREES_AREA
+        )
+        numberOfArches =
+            a.getInt(R.styleable.AvatarView_avvy_loading_arches, Defaults.NUMBER_OF_ARCHES)
+        individualArcDegreeLength = a.getFloat(
+            R.styleable.AvatarView_avvy_loading_arc_degree_length,
+            Defaults.INDIVIDUAL_ARCH_DEGREES_LENGTH
+        )
 
-        initialsPaint.textSize = a.getDimension(R.styleable.AvatarView_avvy_text_size, initialsPaint.textSize)
-        initialsPaint.color = a.getColor(R.styleable.AvatarView_avvy_text_color, initialsPaint.color)
+        initialsPaint.textSize =
+            a.getDimension(R.styleable.AvatarView_avvy_text_size, initialsPaint.textSize)
+        initialsPaint.color =
+            a.getColor(R.styleable.AvatarView_avvy_text_color, initialsPaint.color)
         text = a.getString(R.styleable.AvatarView_avvy_text)
 
         showBadge = a.getBoolean(R.styleable.AvatarView_avvy_show_badge, Defaults.SHOW_BADGE)
         badgeColor = a.getColor(R.styleable.AvatarView_avvy_badge_color, Defaults.BADGE_COLOR)
-        badgeStrokeColor = a.getColor(R.styleable.AvatarView_avvy_badge_stroke_color, Defaults.BADGE_STROKE_COLOR)
-        badgeStrokeWidth = a.getDimensionPixelSize(R.styleable.AvatarView_avvy_badge_stroke_width, badgeStrokeWidth)
+        badgeStrokeColor =
+            a.getColor(R.styleable.AvatarView_avvy_badge_stroke_color, Defaults.BADGE_STROKE_COLOR)
+        badgeStrokeWidth = a.getDimensionPixelSize(
+            R.styleable.AvatarView_avvy_badge_stroke_width,
+            badgeStrokeWidth
+        )
         badgeRadius = a.getDimension(R.styleable.AvatarView_avvy_badge_radius, badgeRadius)
-        badgePosition = BadgePosition.values()[a.getInt(R.styleable.AvatarView_avvy_badge_position, 0)]
+        badgePosition =
+            BadgePosition.values()[a.getInt(R.styleable.AvatarView_avvy_badge_position, 0)]
 
         a.recycle()
         isReadingAttributes = false
     }
 
     private fun init() {
+//        setLayerType(LAYER_TYPE_HARDWARE, null)
         scaleType = Defaults.SCALE_TYPE
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             outlineProvider = OutlineProvider()
@@ -438,12 +498,17 @@ class AvatarView : ImageView {
         else borderThickness).toFloat()
 
         borderRect.set(calculateBounds())
-        borderRadius = min((borderRect.height() - currentBorderThickness) / 2.0f, (borderRect.width() - currentBorderThickness) / 2.0f)
+        borderRadius = min(
+            (borderRect.height() - currentBorderThickness) / 2.0f,
+            (borderRect.width() - currentBorderThickness) / 2.0f
+        )
 
-        val currentBorderGradient = LinearGradient(0f, 0f, borderRect.width(), borderRect.height(),
-                if (isHighlighted) highlightBorderColor else borderColor,
-                if (isHighlighted) highlightBorderColorEnd else borderColorEnd,
-                Shader.TileMode.CLAMP)
+        val currentBorderGradient = LinearGradient(
+            0f, 0f, borderRect.width(), borderRect.height(),
+            if (isHighlighted) highlightBorderColor else borderColor,
+            if (isHighlighted) highlightBorderColorEnd else borderColorEnd,
+            Shader.TileMode.CLAMP
+        )
         borderPaint.apply {
             shader = currentBorderGradient
             strokeWidth = currentBorderThickness
@@ -454,13 +519,19 @@ class AvatarView : ImageView {
 
         avatarDrawableRect.set(borderRect)
         avatarDrawableRect.inset(avatarInset, avatarInset)
-        middleThickness = (borderRect.width() - currentBorderThickness * 2 - avatarDrawableRect.width()) / 2
+        middleThickness =
+            (borderRect.width() - currentBorderThickness * 2 - avatarDrawableRect.width()) / 2
 
         middleRect.set(borderRect)
-        middleRect.inset(currentBorderThickness + middleThickness / 2, currentBorderThickness + middleThickness / 2)
+        middleRect.inset(
+            currentBorderThickness + middleThickness / 2,
+            currentBorderThickness + middleThickness / 2
+        )
 
-        middleRadius = floor(middleRect.height() / 2.0).coerceAtMost(floor(middleRect.width() / 2.0)).toFloat()
-        drawableRadius = (avatarDrawableRect.height() / 2.0f).coerceAtMost(avatarDrawableRect.width() / 2.0f)
+        middleRadius =
+            floor(middleRect.height() / 2.0).coerceAtMost(floor(middleRect.width() / 2.0)).toFloat()
+        drawableRadius =
+            (avatarDrawableRect.height() / 2.0f).coerceAtMost(avatarDrawableRect.width() / 2.0f)
 
         middlePaint.apply {
             style = Paint.Style.STROKE
@@ -512,7 +583,10 @@ class AvatarView : ImageView {
         }
 
         shaderMatrix.setScale(scale, scale)
-        shaderMatrix.postTranslate((dx + 0.5f).toInt() + avatarDrawableRect.left, (dy + 0.5f).toInt() + avatarDrawableRect.top)
+        shaderMatrix.postTranslate(
+            (dx + 0.5f).toInt() + avatarDrawableRect.left,
+            (dy + 0.5f).toInt() + avatarDrawableRect.top
+        )
 
         bitmapShader!!.setLocalMatrix(shaderMatrix)
     }
@@ -528,9 +602,17 @@ class AvatarView : ImageView {
 
         return try {
             val bitmap = if (drawable is ColorDrawable) {
-                Bitmap.createBitmap(Defaults.COLORDRAWABLE_DIMENSION, Defaults.COLORDRAWABLE_DIMENSION, Defaults.BITMAP_CONFIG)
+                Bitmap.createBitmap(
+                    Defaults.COLORDRAWABLE_DIMENSION,
+                    Defaults.COLORDRAWABLE_DIMENSION,
+                    Defaults.BITMAP_CONFIG
+                )
             } else {
-                Bitmap.createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight, Defaults.BITMAP_CONFIG)
+                Bitmap.createBitmap(
+                    drawable.intrinsicWidth,
+                    drawable.intrinsicHeight,
+                    Defaults.BITMAP_CONFIG
+                )
             }
 
             val canvas = Canvas(bitmap)
@@ -580,27 +662,44 @@ class AvatarView : ImageView {
     }
 
     private fun inTouchableArea(x: Float, y: Float): Boolean {
-        return Math.pow(x - borderRect.centerX().toDouble(), 2.0) + Math.pow(y - borderRect.centerY().toDouble(), 2.0) <= Math.pow(borderRadius.toDouble(), 2.0)
+        return Math.pow(
+            x - borderRect.centerX().toDouble(),
+            2.0
+        ) + Math.pow(y - borderRect.centerY().toDouble(), 2.0) <= Math.pow(
+            borderRadius.toDouble(),
+            2.0
+        )
     }
 
     override fun onDraw(canvas: Canvas) {
         if (avatarDrawable == null &&
-                initials == null) {
+            initials == null
+        ) {
             return
         }
         if (avatarBackgroundColor != Color.TRANSPARENT) {
-            canvas.drawCircle(avatarDrawableRect.centerX(), avatarDrawableRect.centerY(), drawableRadius, circleBackgroundPaint)
+            canvas.drawCircle(
+                avatarDrawableRect.centerX(),
+                avatarDrawableRect.centerY(),
+                drawableRadius,
+                circleBackgroundPaint
+            )
         }
 
         val avatarDrawable = this.avatarDrawable
-        if(null != avatarDrawable && hasAvatar()) {
-            canvas.drawCircle(avatarDrawableRect.centerX(), avatarDrawableRect.centerY(), drawableRadius, bitmapPaint)
-        } else if(null != initials){
+        if (null != avatarDrawable && hasAvatar()) {
+            canvas.drawCircle(
+                avatarDrawableRect.centerX(),
+                avatarDrawableRect.centerY(),
+                drawableRadius,
+                bitmapPaint
+            )
+        } else if (null != initials) {
             canvas.drawText(
-                    initials!!,
-                    width.div(2f) - initialsRect.width().div(2f),
-                    height.div(2f) + initialsRect.height().div(2f),
-                    initialsPaint
+                initials!!,
+                width.div(2f) - initialsRect.width().div(2f),
+                height.div(2f) + initialsRect.height().div(2f),
+                initialsPaint
             )
         }
         if (middleThickness > 0) {
@@ -635,7 +734,7 @@ class AvatarView : ImageView {
         }
     }
 
-    private fun hasAvatar(): Boolean{
+    private fun hasAvatar(): Boolean {
         val drawable = this.drawable
         val hasTransparentDrawable = drawable is ColorDrawable && drawable.alpha == 0
         return !hasTransparentDrawable
@@ -643,10 +742,16 @@ class AvatarView : ImageView {
 
     private fun drawBorder(canvas: Canvas) {
         if (isAnimating || isReversedAnimating) {
-            val totalDegrees = (270f + animationLoopDegrees) % 360
+            val totalDegrees = (270f + animationDrawingState.rotationInDegrees) % 360
             drawArches(totalDegrees, canvas)
-            val startOfMainArch = totalDegrees + (currentAnimationArchesArea)
-            canvas.drawArc(arcBorderRect, startOfMainArch, 360 - currentAnimationArchesArea, false, borderPaint)
+            val startOfMainArch = totalDegrees + (animationDrawingState.archesAreaInDegrees)
+            canvas.drawArc(
+                arcBorderRect,
+                startOfMainArch,
+                360 - animationDrawingState.archesAreaInDegrees,
+                false,
+                borderPaint
+            )
         } else {
             canvas.drawCircle(borderRect.centerX(), borderRect.centerY(), borderRadius, borderPaint)
         }
@@ -654,7 +759,8 @@ class AvatarView : ImageView {
 
     private fun drawArches(totalDegrees: Float, canvas: Canvas) {
         for (i in 0..numberOfArches) {
-            val deg = totalDegrees + (spaceBetweenArches + individualArcDegreeLength) * i * (animationArchesSparseness)
+            val deg =
+                totalDegrees + (spaceBetweenArches + individualArcDegreeLength) * i * (animationDrawingState.coercedArchesExpansionProgress)
             canvas.drawArc(arcBorderRect, deg, individualArcDegreeLength, false, borderPaint)
         }
     }
@@ -700,6 +806,35 @@ class AvatarView : ImageView {
         override fun getOutline(view: View, outline: Outline) = Rect().let {
             borderRect.roundOut(it)
             outline.setRoundRect(it, it.width() / 2.0f)
+        }
+    }
+
+    data class AnimationDrawingState(
+        private val archesExpansionProgress: Float,
+        private val rotationProgress: Float,
+    ) {
+        val coercedArchesExpansionProgress: Float
+        val coercedRotationProgress: Float
+
+        init {
+            this.coercedArchesExpansionProgress =
+                archesExpansionProgress.coerceIn(MIN_VALUE, MAX_VALUE)
+            this.coercedRotationProgress = rotationProgress.coerceIn(MIN_VALUE, MAX_VALUE)
+        }
+
+        companion object {
+            const val MAX_VALUE = 1f
+            const val MIN_VALUE = 0f
+        }
+    }
+
+    inner class AnimatorInterface {
+        private val currentAnimationState: AnimationDrawingState
+            get() = animationDrawingState
+
+        fun updateAnimationState(update: (currentState: AnimationDrawingState) -> AnimationDrawingState) {
+            animationDrawingState = update(currentAnimationState)
+            invalidate()
         }
     }
 }
