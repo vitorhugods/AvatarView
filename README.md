@@ -121,12 +121,16 @@ Or, in Java:
 
 ### Custom Animations
 
+<img src="/pics/custom_animations.gif" alt="Example 1" width="300" style="max-width:100%;">
+
 Create an AvatarViewAnimationOrchestrator, passing at least one AvatarViewAnimator.
 
-The `setupAnimators` is first run, and runs in reverse when animation is stopping.
+The `setupAnimators` are the first running, and they run in reverse when animation is stopping. They should not repead infinitely, so the `progressAnimators` can start.
 The `progressAnimators` can run indefinitely.
 
-Full Example:
+You don't need to use both setup and progress, just one is enough. But, by having the setup having a finite duration, and reversible, it allows for a smoother animation stop.
+
+Example:
 ```kotlin
 
     val archesExpansion = object: AvatarViewAnimator{
@@ -160,6 +164,9 @@ Full Example:
 
     avatarView.animationOrchestrator = AvatarViewAnimationOrchestrator(archesExpansion, bouncingRotation) 
 ```
+
+Check the sample app for the full source code.
+
 
 ### Special Thanks
 The roundness of the drawables based on [Henning Dodenhof's Circle ImageView](https://github.com/hdodenhof/CircleImageView)
