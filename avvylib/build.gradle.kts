@@ -5,7 +5,7 @@ plugins {
     id("com.github.panpf.bintray-publish")
 }
 val kotlinVersion: String by project
-val version = "1.1.1"
+val version = "1.2.0"
 android {
     setCompileSdkVersion(AndroidModuleSpecs.compileSdkVersion)
 

@@ -8,12 +8,15 @@ import com.flask.colorpicker.builder.ColorPickerDialogBuilder
 import kotlinx.android.synthetic.main.activity_main.*
 import xyz.schwaab.avvylib.AvatarView
 import xyz.schwaab.avvylib.BadgePosition
+import xyz.schwaab.avvylib.animation.AvatarViewAnimationOrchestrator
 
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        avatarView2.animationOrchestrator = CrazyOrchestrator.create()
 
         buttonToggleHighlight.setOnClickListener {
             updateAvatars {
