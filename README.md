@@ -135,7 +135,6 @@ Example:
 
     val archesExpansion = object: AvatarViewAnimator{
         override val baseAnimator = ValueAnimator.ofFloat(0f, 1f).apply {
-            repeatMode = ValueAnimator.REVERSE
             duration = 500L
             interpolator = DecelerateInterpolator()
         }
