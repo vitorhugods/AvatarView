@@ -1,7 +1,7 @@
 # AvatarView
 A circular Image View with a lot of perks. Including progress animation and highlight state with borders and gradient color.
 
-[![Gradle](https://img.shields.io/badge/Version-1.1.1-brightgreen.svg)](https://github.com/vitorhugods/AvatarView/releases)
+[![Gradle](https://img.shields.io/badge/JCenter-1.2.0-brightgreen.svg)](https://github.com/vitorhugods/AvatarView/releases)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/e4847d7f36754c1a8efb1aff838fdb91)](https://app.codacy.com/app/vitorhugods/AvatarView?utm_source=github.com&utm_medium=referral&utm_content=vitorhugods/AvatarView&utm_campaign=Badge_Grade_Dashboard)
 ![Kotlin](https://img.shields.io/badge/minSdkVersion-14-brightgreen.svg)
 ![Kotlin](https://img.shields.io/badge/Kotlin-100%25-orange.svg)
@@ -45,17 +45,17 @@ Make sure you have the JCenter repository.
 * Kotlin DSL `build.gradle.kts`
 ```kotlin
 dependencies {
-    implementation("xyz.schwaab:avvylib:1.1.1")
+    implementation("xyz.schwaab:avvylib:1.2.0")
 }
 ```
 * Or, Groovy `build.gradle`
 ```gradle
 dependencies {
-    implementation "xyz.schwaab:avvylib:1.1.1"
+    implementation "xyz.schwaab:avvylib:1.2.0"
 }
 ```
 
-## Version 1.1.0
+## Known issue with the 1.1.0 version
 There's a known problem with the version 1.1.0 available on JCenter. Its `aar` file is basically empty, causing the class `AvatarView` to not be found.
 This was caused by enabling minify by mistake and was fixed right after.
 Please use the version `1.1.1` and be happy with that.
