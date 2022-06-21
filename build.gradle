@@ -1,32 +1,26 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-    ext.kotlinVersion = '1.4.10'
+    ext.kotlinVersion = '1.6.21'
     repositories {
         google()
-        jcenter()
-        maven { url 'https://maven.google.com' }
-        maven { url 'https://oss.jfrog.org/artifactory/oss-snapshot-local' }
+        mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.0.2'
+        classpath 'com.android.tools.build:gradle:7.2.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
-        classpath 'com.dicedmelon.gradle:jacoco-android:0.1.5-SNAPSHOT'
-        classpath 'com.github.panpf.bintray-publish:bintray-publish:1.0.0'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
 }
 
-allprojects {
+subprojects {
     repositories {
         google()
-        jcenter()
-    }
-    tasks.withType(Javadoc).all {
-        enabled = false
+        mavenCentral()
     }
 }
+
 task clean(type: Delete) {
     delete rootProject.buildDir
 }

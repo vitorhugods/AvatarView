@@ -18,12 +18,12 @@ jobs:
         with:
           java-version: 1.8
 
-      - name: Upload to Bintray
-        env:
-          BINTRAY_USER: ${{ secrets.BINTRAY_USERNAME }}
-          BINTRAY_KEY: ${{ secrets.BINTRAY_API_KEY }}
-        run: |
-          ./gradlew build bintrayUpload -PbintrayUser=$BINTRAY_USER -PbintrayKey=$BINTRAY_KEY -PdryRun=false
+#
+#      - name: Upload to Central
+#        env:
+#          SOME_SECRET: ${{ secrets.SOME_VALUE }}
+#        run: |
+#          ./gradlew publishAllPublicationsToSonatypeRepository
 
   release:
     name: Create GitHub Release
