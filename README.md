@@ -38,9 +38,9 @@ Thanks to [@p1yu5h](https://github.com/p1yu5h)
 ## Demo
 [Watch the video](https://vimeo.com/291110435) or clone the repo and build the demo app
 
-## Importing to Gradle
+## Gradle setup
 
-Make sure you have the JCenter repository.
+Make sure you have the MavenCentral in your list of repositories.
 
 * Kotlin DSL `build.gradle.kts`
 ```kotlin
@@ -54,11 +54,6 @@ dependencies {
     implementation "xyz.schwaab:avvylib:1.2.0"
 }
 ```
-
-## Known issue with the 1.1.0 version
-There's a known problem with the version 1.1.0 available on JCenter. Its `aar` file is basically empty, causing the class `AvatarView` to not be found.
-This was caused by enabling minify by mistake and was fixed right after.
-Please use the version `1.1.1` and be happy with that.
 
 ## Usage
 
